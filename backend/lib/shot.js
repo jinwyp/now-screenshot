@@ -49,15 +49,15 @@ async function screenShot (url) {
 
 
     async function autoScroll(page){
-        await page.evaluate(async () => {
-            await new Promise((resolve, reject) => {
+        return await page.evaluate( () => {
+            return new Promise((resolve, reject) => {
                 let totalHeight = 0
-                const distance = 900
-                const maxHeight = 1000
+                const distance = 500
+                const maxHeight = 10000
 
                 let timeInterval = 300
 
-                const timer = setInterval(async () => {
+                const timer = setInterval( () => {
                     const scrollHeight = document.body.scrollHeight;
                     window.scrollBy(0, distance);
                     totalHeight += distance;
@@ -66,7 +66,7 @@ async function screenShot (url) {
                     if((totalHeight >= scrollHeight) || ( totalHeight >= maxHeight) ){
                         console.log('==== clearInterval: ')
                         clearInterval(timer);
-                        resolve();
+                        return resolve(scrollHeight);
                     }
 
                 }, timeInterval);
@@ -131,6 +131,7 @@ async function screenShot (url) {
     console.log('===== chrome.executablePath: ', await chrome.executablePath, chrome.headless, chrome.defaultViewport)
     console.log('===== chrome.args: ', options)
 
+
     browser = await puppeteer.launch({
         args: options,
         // defaultViewport: {
@@ -146,7 +147,9 @@ async function screenShot (url) {
         console.log(msg.text());
     });
 
-    await page.setViewport({ width: 1920, height: 9000});
+    let tempHeight = 1080;
+
+    await page.setViewport({ width: 1920, height: tempHeight});
     await page.setExtraHTTPHeaders({
         'Accept-Language': 'en-US',
         'Cookie': 'language=en'
@@ -154,7 +157,12 @@ async function screenShot (url) {
 
 
     await page.goto(sourceUrl);
-    await autoScroll(page);
+
+    tempHeight = await autoScroll(page);
+
+    console.log('===== tempHeight: ', tempHeight)
+
+    await page.setViewport({ width: 1920, height: tempHeight});
 
     await page.screenshot({
         path: tempPath,
