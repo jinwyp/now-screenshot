@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "name": "now-demo",
+  "name": "demo",
   "builds": [
     { "src": "backend/*.js", "use": "@now/node", "config": { "maxLambdaSize": "50mb" } },
     { "src": "package.json", "use": "@now/static-build" }
