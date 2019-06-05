@@ -7,10 +7,10 @@
 
     <button class="btn btn-info" @click="goToUrl">GO</button>
 
-    <div class="form-group form-check">
+    <!--<div class="form-group form-check">
       <input type="checkbox" class="form-check-input" id="scales" name="scales" v-model="isEN">
       <label for="scales" class="form-check-label">语言: 英文</label>
-    </div>
+    </div>-->
 
   </div>
 </template>
@@ -24,7 +24,7 @@ import { Component, Vue } from 'vue-property-decorator';
 })
 export default class Home extends Vue {
     private url: string = '' ;
-    private isEN: boolean = true ;
+    private isEN: boolean = false ;
 
 
     private goToUrl() {
