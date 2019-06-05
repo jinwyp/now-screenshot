@@ -1,6 +1,15 @@
-# nowdemo
+# Screenshot as a service power by [now] (zeit.co)
 
-## Project setup
+
+## Backend Setup
+
+### 
+
+1. ```cd/backend, npm i, npm start```
+2. Deploy to Now server. Enter project folder. Run ``` now ```
+
+
+## Frontend Vuejs Project setup
 ```
 npm install
 ```
@@ -32,3 +41,6 @@ npm run test:unit
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
+
+
+[now]: https://zeit.co/now
