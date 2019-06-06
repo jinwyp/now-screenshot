@@ -3,7 +3,7 @@ const chrome = require('chrome-aws-lambda')
 const { parse, URL } = require('url');
 
 
-async function timeout(ms) {
+async function waitTime(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
@@ -52,10 +52,10 @@ async function screenShot (url) {
         return await page.evaluate( () => {
             return new Promise((resolve, reject) => {
                 let totalHeight = 0
-                const distance = 400
-                const maxHeight = 10000
+                const distance = 300
+                const maxHeight = 11000
 
-                let timeInterval = 300
+                let timeInterval = 90
 
                 const timer = setInterval( () => {
                     const scrollHeight = document.body.scrollHeight;
@@ -63,10 +63,19 @@ async function screenShot (url) {
                     totalHeight += distance;
 
                     console.log('==== totalHeight: ', scrollHeight,  totalHeight)
-                    if((totalHeight >= scrollHeight) || ( totalHeight >= maxHeight) ){
-                        console.log('==== clearInterval: ')
-                        clearInterval(timer);
-                        return resolve(scrollHeight);
+
+                    if (scrollHeight <= 200) {
+                        if( ( totalHeight >= maxHeight) ){
+                            console.log('==== scrollHeight <= 200 clearInterval : ')
+                            clearInterval(timer);
+                            return resolve(totalHeight);
+                        }
+                    } else {
+                        if((totalHeight >= scrollHeight) || ( totalHeight >= maxHeight) ){
+                            console.log('==== scrollHeight >= 200 clearInterval : ')
+                            clearInterval(timer);
+                            return resolve(totalHeight);
+                        }
                     }
 
                 }, timeInterval);
@@ -77,7 +86,7 @@ async function screenShot (url) {
 
 
 
-    let browser = null
+
 
     const argumentTemp = [
         // '--disable-background-timer-throttling',
@@ -129,11 +138,10 @@ async function screenShot (url) {
     const options = [...chrome.args, '--lang=en-US']
 
     console.log('===== chrome.executablePath: ', await chrome.executablePath, chrome.headless, chrome.defaultViewport)
-    console.log('===== chrome.args: ', options)
+    // console.log('===== chrome.args: ', options)
 
-
-    browser = await puppeteer.launch({
-        args: options,
+    let browser = await puppeteer.launch({
+        args: chrome.args,
         // defaultViewport: {
         //     width: 1920,
         //     height: 2160
@@ -162,6 +170,7 @@ async function screenShot (url) {
 
     console.log('===== tempHeight: ', tempHeight)
 
+    await waitTime(500)
     await page.setViewport({ width: 1920, height: tempHeight});
 
     await page.screenshot({
