@@ -8,7 +8,10 @@ exports.shot = async (ctx, next) => {
     console.log('===== request Query: ', ctx.query)
 
     const requestBody = {
-        url : 'https://www.baidu.com'
+        url : 'https://www.baidu.com',
+        wailTime: 1300,
+        intervalTime: 90,
+        intervalScroll: 300,
     };
 
     if (ctx.request.body && ctx.request.body.url) {
@@ -20,6 +23,19 @@ exports.shot = async (ctx, next) => {
         if (ctx.query.url) {
             requestBody.url = ctx.query.url
         }
+
+        if (ctx.query.waitTime) {
+            requestBody.waitTime = Number(query.waitTime)
+        }
+
+        if (ctx.query.intervalTime) {
+            requestBody.intervalTime = Number(query.intervalTime)
+        }
+
+        if (ctx.query.intervalScroll) {
+            requestBody.intervalScroll = Number(query.intervalScroll)
+        }
+
     }
 
 
@@ -29,7 +45,7 @@ exports.shot = async (ctx, next) => {
 
 
     try {
-        const file = await screenshot( requestBody.url );
+        const file = await screenshot( requestBody.url, requestBody );
         console.log('===== file: ', file)
 
 

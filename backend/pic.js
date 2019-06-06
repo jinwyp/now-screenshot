@@ -10,14 +10,28 @@ module.exports = async function (req, res) {
 
 
     const requestBody = {
-        url : 'https://www.baidu.com'
+        url : 'https://www.baidu.com',
+        wailTime: 1300,
+        intervalTime: 90,
+        intervalScroll: 300,
     };
 
     if (query && query.url) {
-        if (query.url) {
-            requestBody.url = query.url
-        }
+        requestBody.url = query.url
     }
+
+    if (query && query.waitTime) {
+        requestBody.waitTime = Number(query.waitTime)
+    }
+
+    if (query && query.intervalTime) {
+        requestBody.intervalTime = Number(query.intervalTime)
+    }
+
+    if (query && query.intervalScroll) {
+        requestBody.intervalScroll = Number(query.intervalScroll)
+    }
+
 
 
     if (!/^https?:\/\//i.test(requestBody.url)) {
@@ -43,7 +57,7 @@ module.exports = async function (req, res) {
     } else {
 
         try {
-            const file = await screenshot(requestBody.url);
+            const file = await screenshot(requestBody.url, requestBody);
 
             console.log('===== file: ', file)
 

@@ -12,7 +12,7 @@ function randomIntFromInterval(min, max) {
 }
 
 
-async function screenShot (url) {
+async function screenShot (url, options) {
 
     console.log('===== screenShot url original: ', url)
 
@@ -29,7 +29,7 @@ async function screenShot (url) {
 
 
     const tempUrl = new URL(sourceUrl);
-    const tempHostname = tempUrl.hostname + '-' + randomIntFromInterval(100000, 999999).toString() + '.jpg';
+    const tempHostname = tempUrl.hostname + '-' + randomIntFromInterval(10, 99).toString() + '.jpg';
     const tempPath = '/tmp/' + tempHostname
 
 
@@ -48,21 +48,21 @@ async function screenShot (url) {
     await chrome.font('https://raw.githack.com/googlei18n/noto-cjk/master/NotoSansSC-Regular.otf');
 
 
-    async function autoScroll(page){
-        return await page.evaluate( () => {
+    async function autoScroll(page, scrollOptions){
+        return await page.evaluate( (optionsAutoScroll ) => {
             return new Promise((resolve, reject) => {
                 let totalHeight = 0
-                const distance = 300
-                const maxHeight = 11000
+                const distance = Number(optionsAutoScroll.intervalScroll) || 300
+                const maxHeight = 10000
 
-                let timeInterval = 90
+                let timeInterval = Number(optionsAutoScroll.intervalTime) || 90
 
                 const timer = setInterval( () => {
                     const scrollHeight = document.body.scrollHeight;
                     window.scrollBy(0, distance);
                     totalHeight += distance;
 
-                    console.log('==== totalHeight: ', scrollHeight,  totalHeight)
+                    console.log('==== totalHeight: ', scrollHeight,  totalHeight, distance, timeInterval)
 
                     if (scrollHeight <= 200) {
                         if( ( totalHeight >= maxHeight) ){
@@ -77,10 +77,10 @@ async function screenShot (url) {
                             return resolve(totalHeight);
                         }
                     }
-
+10
                 }, timeInterval);
             });
-        });
+        }, scrollOptions);
     }
 
 
@@ -135,10 +135,10 @@ async function screenShot (url) {
         '--lang=en-US' ]
 
 
-    const options = [...chrome.args, '--lang=en-US']
+    const tempArgs = [...chrome.args, '--lang=en-US']
 
     console.log('===== chrome.executablePath: ', await chrome.executablePath, chrome.headless, chrome.defaultViewport)
-    // console.log('===== chrome.args: ', options)
+    // console.log('===== chrome.args: ', tempArgs)
 
     let browser = await puppeteer.launch({
         args: chrome.args,
@@ -166,12 +166,12 @@ async function screenShot (url) {
 
     await page.goto(sourceUrl);
 
-    tempHeight = await autoScroll(page);
+    tempHeight = await autoScroll(page, options);
 
-    console.log('===== tempHeight: ', tempHeight)
+    console.log('===== tempHeight: ', tempHeight, options.waitTime)
 
-    await waitTime(500)
     await page.setViewport({ width: 1920, height: tempHeight});
+    await waitTime(Number(options.waitTime) || 1300)
 
     await page.screenshot({
         path: tempPath,
