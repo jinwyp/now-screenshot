@@ -77,7 +77,6 @@ async function screenShot (url, options) {
                             return resolve(totalHeight);
                         }
                     }
-10
                 }, timeInterval);
             });
         }, scrollOptions);
