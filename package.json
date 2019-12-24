@@ -31,5 +31,8 @@
     "sass-loader": "^7.1.0",
     "typescript": "^3.4.5",
     "vue-template-compiler": "^2.6.10"
+  },
+  "engines": {
+    "node": "12.x"
   }
 }
