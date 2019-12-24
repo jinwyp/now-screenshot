@@ -53,7 +53,7 @@ async function screenShot (url, options) {
             return new Promise((resolve, reject) => {
                 let totalHeight = 0
                 const distance = Number(optionsAutoScroll.intervalScroll) || 300
-                const maxHeight = 10000
+                const maxHeight = 3000
 
                 let timeInterval = Number(optionsAutoScroll.intervalTime) || 90
 
